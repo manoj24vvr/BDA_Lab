@@ -1,0 +1,11 @@
+--> creating a dataframe
+val df = Seq(   (1, 2),   (3, 4),   (5, 6),   (7, 8) ).toDF("col1", "col2")
+-->SUM
+val sumDF = df.withColumn("sum", $"col1" + $"col2")
+-->DIFF
+val diffDF = df.withColumn("diff", $"col1" * $"col2")
+-->PROD
+val profDF = df.withColumn("product", $"col1" * $"col2")
+-->DIV
+val divDF = df.withColumn("div", $"col1" / $"col2")
+

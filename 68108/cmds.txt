@@ -1,0 +1,62 @@
+// SCALA for WORD COUNT
+
+port --> https://172.16.68.80:8080
+
+spark-shell
+
+val text=sc.textFile("200968108/inputWC.txt")
+
+val mapf=text.flatMap(line=>line.split(" "))
+
+mapf.collect;
+
+val mapperf=mapf.map(word=>(word,1))
+
+mapperf.collect;
+
+val reducerf=mapperf.reduceByKey(_+_)
+
+reducerf.collect;
+
+---------------------------------------------------------------------
+
+words = sc.textFile('/text.txt').flatMap(lambda line: line.split(" "))
+a = words.map(lambda word: (word,1))
+b = a.reduceByKey(lambda a,b:a+b)
+b.collect()
+
+-----------------------------------------------
+
+spark-submit 68108/sparkWC.py
+
+turing functions
+formatting functions
+
+
+Scala commands
+
+val text=sc.textFile("/user/in")
+val count = text.flatMap(line=>line.split(" "))
+count.collect;
+val mapf=count.map(word=>(word,1))
+val reducerf = mapf.reduceByKey(_+_)
+reducerf.collect;
+val countf = mapf.countByValue()
+
+q1. find sum of employees department wise
+q2. find the tuples based on class sensitivity
+
+Send dataset to hdfs dfs -copyfromlocal /batch_4/200968174/employees.csv
+get data from hdfs
+val df = spark.read.option("header","true").csv("/batch_4/200968174/employees.csv") 
+
+change datatype 
+df.select(col("salary").cast("int").as("salary")) //skip this command, not necessary might not work also
+							do the neeche ka thing instead
+
+answer to q1
+df.groupBy("DEPARTMENT_ID").agg(sum("SALARY")).show(false)
+
+answer to q2
+df2.groupBy("DEPARTMENT_ID", "GENDER").agg(count("GENDER")).show
+

@@ -1,0 +1,57 @@
+hadoop fs -ls: List the contents of the HDFS directory.
+
+hadoop fs -mkdir /mydir: Create a directory named "mydir" in HDFS.
+
+hadoop fs -put localfile /hdfsdir: Upload a file from your local file system to HDFS.
+
+hadoop fs -get hdfsfile localdir: Download a file from HDFS to your local file system.
+
+hadoop fs -rm hdfsfile: Delete a file from HDFS.
+
+hadoop fs -rmdir hdfsdir: Remove an empty directory from HDFS.
+
+hadoop fs -rmr hdfsdir: Remove a directory and its contents from HDFS.
+
+hadoop fs -du -s /: Display the disk usage of the root directory in HDFS.
+
+hadoop fs -cat hdfsfile: Display the contents of a file in HDFS.
+
+hadoop fs -tail hdfsfile: Display the last 1KB of a file in HDFS.
+
+hadoop fs -copyToLocal hdfsfile localfile: Copy a file from HDFS to the local file system.
+
+hadoop fs -copyFromLocal localfile hdfsdir: Copy a file from the local file system to HDFS.
+
+hadoop fs -mv hdfsfile hdfsdir: Move a file to a new location in HDFS.
+
+hadoop fs -cp hdfsfile hdfsdir: Copy a file to a new location in HDFS.
+
+hadoop fs -chgrp group hdfsfile: Change the group ownership of a file in HDFS.
+
+hadoop fs -chmod permissions hdfsfile: Change the permissions of a file in HDFS.
+
+hadoop fs -chown user hdfsfile: Change the owner of a file in HDFS.
+
+hadoop fs -setrep -w 3 hdfsfile: Set the replication factor for a file in HDFS to 3.
+
+hadoop fs -touchz hdfsfile: Create a new, empty file in HDFS.
+
+hadoop fs -test -e hdfsfile: Test whether a file exists in HDFS.
+
+hadoop fs -test -d hdfsdir: Test whether a directory exists in HDFS.
+
+hadoop fs -count -q hdfsdir: Count the number of files, directories, and bytes used in HDFS.
+
+hadoop fs -getmerge hdfsdir localfile: Concatenate files in an HDFS directory and copy the result to the local file system.
+
+hadoop fs -ls -R /: List the contents of the root directory in HDFS recursively.
+
+hadoop fs -df -h /: Display the disk usage of the root directory in HDFS in a human-readable format.
+
+hadoop fs -setfacl -m user:alice:rwx hdfsfile: Set the ACL for a file in HDFS, granting read, write, and execute permissions to the user "alice".
+
+hadoop fs -getfacl hdfsfile: Display the ACL for a file in HDFS.
+
+hadoop fs -truncate -w 100 hdfsfile: Truncate a file in HDFS to a new length of 100 bytes.
+
+hadoop fs -count -q hdfsdir | grep 'file' | awk '{print $2}': Count the number

@@ -1,0 +1,137 @@
+
+def non_parametric_func(){
+     | println("Hi This is a Non-parametric function")
+     | }
+non_parametric_func()
+Hi This is a Non-parametric function
+
+def parametric_func(num1:Int,num2:Int){
+     | println("Sum of given no's: ",num1+num2)
+     | }
+parametric_func(5,34)
+(Sum of given no's: ,39)
+
+def recursive(num:Int):Int={
+     | if(num==1){
+     | return 1
+     | }
+     | num*recursive(num-1)
+     | }
+recursive(6)
+res2: Int = 720
+
+def default_param(f1:Double,num:Int, n:Int=10):Double={
+     | return f1*n+num
+     | }
+default_param(12.5,2)
+res7: Double = 127.0
+
+def outer(){
+     | println("Executing Outer func")
+     | def inner(){
+     | println("Executing Inner func")
+     | }
+     | inner()
+     | }
+outer()
+
+
+val sum=(a:Int,b:Int)=>a+b
+sum: (Int, Int) => Int = $Lambda$1963/1476236281@3b47178c
+
+scala> sum(6,99)
+res0: Int = 105
+
+def sum(a:Int)(b:Int)={
+     | a+b
+     | }
+sum: (a: Int)(b: Int)Int
+
+scala> sum(6)(56)
+res1: Int = 62
+
+
+Q7 A Demonstrate the built-in functions using Scala by creating an array. Perform following functions:
+
+val arr= Array(2,4,6,8,10)
+arr: Array[Int] = Array(2, 4, 6, 8, 10)
+
+1) Non-Parameterized functions
+
+def non_param(){
+     | for(i <- arr){
+     | println(i)
+     | }
+     | }
+non_param()
+2
+4
+6
+8
+10
+
+
+2) Parameterized functions
+
+def param(arr1:Array[Int]):Array[Int]={
+     | for (i <- arr) yield i
+     | }
+param(arr)
+res9: Array[Int] = Array(2, 4, 6, 8, 10)
+
+3) Recursion
+
+
+
+4) Function parameter with Default value
+
+
+5) Anonymous functions
+
+
+
+6) Function with Map method
+
+
+
+7) Currying functions
+
+def currying(arr1:Array[Int]):Int={
+     | var sum=0
+     | for (i <- arr1){
+     | sum += i
+     | }
+     | return sum
+     | }
+currying(arr)
+res3: Int = 30
+
+8) Nested functions
+
+
+B 1) Use spark Scala to demonstrate the add & multiplication of two numbers using Currying
+
+def add_multiply(a:Int)(b:Int){
+     | println("Sum: ",a+b)
+     | println("Product: ",a*b)
+     | }
+add_multiply: (a: Int)(b: Int)Unit
+
+scala> add_multiply(6)(8)
+(Sum: ,14)
+(Product: ,48)
+
+
+2) Execute Scala Program of Partial function using Case statement by creating array.
+
+
+
+3) Create Scala program to demonstrate the function overloading by changing the number of parameters
+
+
+
+4) Scala program of Multiple Nested Function
+
+
+
+

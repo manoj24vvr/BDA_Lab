@@ -1,0 +1,58 @@
+L9) A) Create a student database considering the attributes as student id, Student name, Grade of Previous Semester and perform the basic database (Using HiveQL operations):
+
+1. Create, Update, Delete, Drop operations
+2. Fetch te data in both ascending and descending order
+3. Counbt and Display the number of students based on "Grade Wise"
+
+B) Using the Food dataset execute the following queries using HiveQL:
+
+1. Computre the total content of calories in the food.
+2. SSort the data based on attribute of "Rating" and perform the basic operations of database with views, indexes and functions.
+3. List down and count the different food labels (Protein, Vitamin, Fiber, Fat, Sodium and Sugar) with inclusion of "Manufacture" attribute.
+
+L10) A) Create table "Hospital Employee" with 6 attributes such as Employee Name, ID, Address, Department, Salary, Duty Shifts.
+
+1. Load data into employees table from Hospital Employees.txt file.
+2. Display the list of corresponding employee id, name and their address.
+3. Create a new department with the attributes Eno and Ename, Now display the department id in which each emp-loyee works along with employee id and their  age.
+
+
+		TERMINAL - 1
+
+cd /usr/local/hive/apache-hive-3.1.2-bin/bin/
+
+schematool -dbType derby -initSchema
+
+hiveserver2
+
+
+		TERMINAL - 2
+
+cd /usr/local/hive/apache-hive-3.1.2-bin/bin/
+
+beeline -n hdoop -u jdbc:hive2://localhost:10000
+
+ 
+
+ 	// CREATE INTERNAL TABLE
+ 	
+create database db_108;
+
+use db_108;
+
+create table student108(name string, rollno int, dept string) row format delimited fields terminated by ',';
+
+show databases;
+
+describe extended  student108;
+ 
+LOAD DATA LOCAL INPATH "/home/hdoop/hive_input.txt" INTO TABLE student108;
+ 
+SELECT * FROM student108;
+ 
+
+	// CREATE EXTERNAL TABLE
+
+create external table if not exists students_ext(namestring, rollno int, dept string) row format delimited fields terminated by ',' LOCATION '<path on hdfs directory
+
+

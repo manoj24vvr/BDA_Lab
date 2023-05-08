@@ -1,0 +1,119 @@
+hdoop@dscalab04-15:~$ spark-shell
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+23/04/11 15:54:05 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+23/04/11 15:54:06 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+Spark context Web UI available at http://dscalab04-15:4041
+Spark context available as 'sc' (master = local[*], app id = local-1681208646358).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.3.1
+      /_/
+         
+Using Scala version 2.12.15 (OpenJDK 64-Bit Server VM, Java 1.8.0_362)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+cala> val rdd1 = sc.parallelize(Array((1,"John",50000),(2,"Aaron",100000),(3,"SSK",20000)))
+rdd1: org.apache.spark.rdd.RDD[(Int, String, Int)] = ParallelCollectionRDD[0] at parallelize at <console>:27
+
+scala> val df1 = rdd1.toDF("ID","EmployeName","Salary")
+df1: org.apache.spark.sql.DataFrame = [ID: int, EmployeName: string ... 1 more field]
+
+scala> df1.show
++---+-----------+------+
+| ID|EmployeName|Salary|
++---+-----------+------+
+|  1|       John| 50000|
+|  2|      Aaron|100000|
+|  3|        SSK| 20000|
++---+-----------+------+
+
+
+scala> import org.apache.spark.sql.Row
+import org.apache.spark.sql.Row
+
+scala> import org.apache.spark.sql.types._
+import org.apache.spark.sql.types._
+
+scala> val rdd2 = sc.parallelize(Array(Row(1,"John",50000),Row(2,"Aaron",50),Row(3,"SSK",20000)))
+rdd2: org.apache.spark.rdd.RDD[org.apache.spark.sql.Row] = ParallelCollectionRDD[0] at parallelize at <console>:27
+
+scala> val schema = StructType(Array(StructField("ID",IntegerType,true),StructField("EmployeeName",StringType,true),StructField("Salary",IntegerType,true)))
+schema: org.apache.spark.sql.types.StructType = StructType(StructField(ID,IntegerType,true),StructField(EmployeeName,StringType,true),StructField(Salary,IntegerType,true))
+
+scala> val df2 = spark.createDataFrame(rdd2,schema)
+df2: org.apache.spark.sql.DataFrame = [ID: int, EmployeeName: string ... 1 more field]
+
+scala> df2.show
++---+------------+------+
+| ID|EmployeeName|Salary|
++---+------------+------+
+|  1|        John| 50000|
+|  2|       Aaron|    50|
+|  3|         SSK| 20000|
++---+------------+------+
+
+
+scala> df2.printSchema
+root
+ |-- ID: integer (nullable = true)
+ |-- EmployeeName: string (nullable = true)
+ |-- Salary: integer (nullable = true)
+ 
+scala> case class Employee(ID:Int, Name:String, Salary:Int)
+defined class Employee
+
+scala> val rdd3 = sc.textFile("/Week9.txt")
+rdd3: org.apache.spark.rdd.RDD[String] = /Week9.txt MapPartitionsRDD[3] at textFile at <console>:23
+
+scala> val df3 = rdd3.map(x => x.split(',')).map(x => Employee(x(0).toInt, x(1), x(2).toInt)).toDF
+df3: org.apache.spark.sql.DataFrame = [ID: int, Name: string ... 1 more field]
+
+scala> df3.show
++---+-----+------+
+| ID| Name|Salary|
++---+-----+------+
+|  1| John|100000|
+|  2|Aaron|    50|
+|  3|  SSK|200000|
++---+-----+------+
+
+
+scala> val df4 = spark.read.option("header","true").option("inferSchema","true").csv("/Employee_Salary_Dataset.csv")
+df4: org.apache.spark.sql.DataFrame = [ID: int, Experience_Years: int ... 3 more fields]
+
+scala> df4.show
++---+----------------+---+------+-------+
+| ID|Experience_Years|Age|Gender| Salary|
++---+----------------+---+------+-------+
+|  1|               5| 28|Female| 250000|
+|  2|               1| 21|  Male|  50000|
+|  3|               3| 23|Female| 170000|
+|  4|               2| 22|  Male|  25000|
+|  5|               1| 17|  Male|  10000|
+|  6|              25| 62|  Male|5001000|
+|  7|              19| 54|Female| 800000|
+|  8|               2| 21|Female|   9000|
+|  9|              10| 36|Female|  61500|
+| 10|              15| 54|Female| 650000|
+| 11|               4| 26|Female| 250000|
+| 12|               6| 29|  Male|1400000|
+| 13|              14| 39|  Male|6000050|
+| 14|              11| 40|  Male| 220100|
+| 15|               2| 23|  Male|   7500|
+| 16|               4| 27|Female|  87000|
+| 17|              10| 34|Female| 930000|
+| 18|              15| 54|Female|7900000|
+| 19|               2| 21|  Male|  15000|
+| 20|              10| 36|  Male| 330000|
++---+----------------+---+------+-------+
+only showing top 20 rows
+
+
+ 
+ 
+

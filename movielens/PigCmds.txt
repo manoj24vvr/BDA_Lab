@@ -1,0 +1,21 @@
+>raw_movie_full = LOAD '/home/hdoop/movielens/movies.txt' using PigStorage(',') AS (movieID:int, title:chararray, genres:chararray);
+
+>movie = foreach raw_movie_full generate movieID as movieID, title;
+
+>raw_ratings_full = LOAD '/home/hdoop/movielens/ratings.txt' USING PigStorage(',') AS (userID:int, movieID:int, rating:float, timestamp:chararray);
+
+>ratings = foreach raw_ratings_full generate movieID as movieID, rating as rating;
+
+>movie = foreach raw_movie_full generate movieID as movieID, title, genres;
+
+>grouped_ratings = GROUP ratings by movieID;
+
+>movieID_ratings = foreach grouped_ratings generate group as movieID, (int)COUNT(ratings.movieID) AS num_rating, (float)SUM(ratings.rating) AS tot_rating, (float)AVG(ratings.rating) AS avg_rating;
+
+>movie_rating_jn = JOIN movieID_ratings BY movieID right, movie BY movieID;
+
+>movie_rating = foreach movie_rating_jn generate movie::movieID AS movieID, movie::title AS movieTitle, movieID_ratings::tot_rating AS total_rating, movieID_ratings::num_rating AS num_ratings, movieID_ratings::avg_rating AS avg_rating;
+
+>sorted_ratings = ORDER movie_rating BY num_ratings DESC, avg_rating DESC;
+
+>STORE sorted_rating INTO '/home/hdoop/movielens/sorted_rating.txt';

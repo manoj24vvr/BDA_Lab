@@ -1,0 +1,258 @@
+Pig commands
+
+->Pig –x local
+->LOAD:-
+Ex:-
+student = LOAD 'hdfs://localhost:9000/pig_data/student_data.txt' USING PigStorage(',') as (id:int, firstname:chararray, lastname:chararray, phone:chararray, city:chararray );
+
+
+-->store:-
+STORE student INTO ' hdfs://localhost:9000/pig_Output/ ' USING PigStorage (',');
+
+--> Dump:-entire table.
+Dump student
+
+--> Describe:-The describe operator is used to view the schema of a relation
+describe student;
+
+-->explain:-The explain operator is used to display the logical, physical, and MapReduce execution plans of a relation.
+explain student;
+
+-->illustrate:-The illustrate operator gives you the step-by-step execution of a sequence of statements.
+illustrate Relation_name;
+
+-->group:-The GROUP operator is used to group the data in one or more relations. It collects the data having the same key.
+
+group_data = GROUP student_details by age;
+
+->group by multiple columns
+group_multiple = GROUP student_details by (age, city);
+
+->Group All:-You can group a relation by all the columns as shown below.
+group_all = GROUP student_details All;
+
+-->COGROUP:-while the cogroup operator is used in statements involving two or more relations.
+cogroup_data = COGROUP student_details by age, employee_details by age;
+
+-->Join:-The JOIN operator is used to combine records from two or more relations. While performing a join operation, we declare one (or a group of) tuple(s) from each relation, as keys. When these keys match, the two particular tuples are matched, else the records are dropped. Joins can be of the following types −
+
+->Self-join:-
+Relation3_name = JOIN Relation1_name BY key, Relation2_name BY key ;
+->Inner-join
+result = JOIN relation1 BY columnname, relation2 BY columnname;
+->Outer-join − 
+->left join
+Relation3_name = JOIN Relation1_name BY id LEFT OUTER, Relation2_name BY customer_id;
+ ->right join
+outer_right = JOIN customers BY id RIGHT, orders BY customer_id;
+-> full join
+outer_full = JOIN customers BY id FULL OUTER, orders BY customer_id;
+
+->JOIN Using Multiple Keys:-
+Relation3_name = JOIN Relation2_name BY (key1, key2), Relation3_name BY (key1, key2);
+
+-->CROSS:-The CROSS operator computes the cross-product of two or more relations
+Relation3_name = CROSS Relation1_name, Relation2_name;
+
+-->UNION:-The UNION operator of Pig Latin is used to merge the content of two relations. 
+Relation_name3 = UNION Relation_name1, Relation_name2;
+
+-->SPLIT:-The SPLIT operator is used to split a relation into two or more relations.
+SPLIT student_details into student_details1 if age<23, student_details2 if (22<age and age>25);
+
+-->FILTER:-
+The FILTER operator is used to select the required tuples from a relation based on a condition.
+filter_data = FILTER student_details BY city == 'Chennai';
+
+-->DISTINCT:-
+The DISTINCT operator is used to remove redundant (duplicate) tuples from a relation.
+Relation_name2 = DISTINCT Relatin_name1;
+
+-->FOREACH:-The FOREACH operator is used to generate specified data transformations based on the column data.
+foreach_data = FOREACH student_details GENERATE id,age,city;
+
+-->ORDER BY:-The ORDER BY operator is used to display the contents of a relation in a sorted order based on one or more fields
+order_by_data = ORDER student_details BY age DESC/ASC;
+
+-->LIMIT:-The LIMIT operator is used to get a limited number of tuples from a relation.
+limit_data = LIMIT student_details 4; 
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+EVALUATION FUNCTIONS:-
+
+@zone 1:-AVG(),COUNT(),MAX(),MIN(),SUM(),COUNT_STAR(),BagToString()
+(first group then use these fn)
+
+-->AVG():-
+>To get the global average value, we need to perform a Group All operation, and calculate the average value using the AVG() function.
+>To get the average value of a group, we need to group it using the Group By operator and proceed with the average function.
+>EX:-
+student_group_all = Group student_details All;
+student_gpa_avg = foreach student_group_all  Generate (student_details.firstname, student_details.gpa), AVG(student_details.gpa); 
+Dump student_gpa_avg;
+
+-->BagToString():-ex:-
+group_dob = Group dob1 All;
+dob_string = foreach group_dob Generate BagToString(dob1);
+
+-->COUNT_STAR():-IT WILL include NULL values in count.
+
+-->SUM():-
+student_workpages_sum = foreach employee_group Generate 
+   (employee_data.name,employee_data.daily_typing_pages),SUM(employee_data.daily_typing_pages);
+
+
+----------------------------------------------------------------------------------------
+
+@Zone 2:-
+(without any group or cogroup)
+
+-->CONCAT():-
+student_name_concat = foreach student_details Generate CONCAT (firstname, lastname);
+
+-->SIZE():-OF A COLUMN OF PARTICULAR DATATYPE
+size = FOREACH employee_data GENERATE SIZE(name);
+
+-->TOKENIZE():- is used to split a string (which contains a group of words) in a single tuple and returns a bag which contains the output of the split operation.
+EX:-
+student_name_tokenize = foreach student_details  Generate TOKENIZE(name);
+
+----------------------------------------------------------------------------------------
+
+@zone 3:-
+(first cogroup then use these fn)
+
+-->DIFF():-function compares two bags in a tuple
+cogroup_data = COGROUP emp_sales by sno, emp_bonus by sno;
+diff_data = FOREACH cogroup_data GENERATE DIFF(emp_sales,emp_bonus);
+
+-->IsEmpty():- function of Pig Latin is used to check if a bag or map is empty.
+cogroup_data = COGROUP emp_sales by age, emp_bonus by age;
+isempty_data = filter cogroup_data by IsEmpty(emp_sales);
+
+-->SUBTRACT():-
+cogroup_data = COGROUP emp_sales by sno, emp_bonus by sno;
+sub_data = FOREACH cogroup_data GENERATE SUBTRACT(emp_sales, emp_bonus);
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+QUES-1:-
+Write a program to compute the average, minimum and maximum recorded temperature by year wise
+ using the PIG Latin commands (PIG script). Hint: Temperature datasheet yearly collected through sensors
+
+-- Load the input data
+temperatures = LOAD 'input_data.csv' USING PigStorage(',') AS (year:int, temperature:float);
+
+-- Group the temperatures by year
+grouped_temperatures = GROUP temperatures BY year;
+
+-- Compute the average temperature for each year
+averages = FOREACH grouped_temperatures GENERATE group AS year, AVG(temperatures.temperature) AS average_temperature;
+
+-- Compute the minimum temperature for each year
+minimums = FOREACH grouped_temperatures GENERATE group AS year, MIN(temperatures.temperature) AS minimum_temperature;
+
+-- Compute the maximum temperature for each year
+maximums = FOREACH grouped_temperatures GENERATE group AS year, MAX(temperatures.temperature) AS maximum_temperature;
+
+-- Store the results
+STORE averages INTO 'output_data/average_temperatures' USING PigStorage(',');
+STORE minimums INTO 'output_data/minimum_temperatures' USING PigStorage(',');
+STORE maximums INTO 'output_data/maximum_temperatures' USING PigStorage(',');
+
+
+----------------------------------------------------------------------
+QUES 2:-
+Develop a program to perform the following using the sales order dataset 
+To count the maximum, minimum number of units sold region wise (East, West and Central region) 
+Number of Unique Items sold along with representative name 
+
+
+-- Load the sales order dataset into a relation
+sales = LOAD 'sales_order_dataset.csv' USING PigStorage(',') AS (rep_name:chararray, region:chararray, item:chararray, units_sold:int);
+
+-- Group the sales data by region
+sales_by_region = GROUP sales BY region;
+
+-- Count the maximum and minimum number of units sold for each region
+units_sold_stats = FOREACH sales_by_region GENERATE 
+                      group AS region,
+                      MAX(sales.units_sold) AS max_units_sold,
+                      MIN(sales.units_sold) AS min_units_sold;
+
+-- Group the sales data by item and representative name
+sales_by_item_rep = GROUP sales BY (item, rep_name);
+
+-- Count the number of unique items sold along with representative name
+unique_items_sold = FOREACH sales_by_item_rep GENERATE 
+                       group.rep_name AS rep_name,
+                       group.item AS item,
+                       COUNT(sales) AS num_items_sold;
+
+-- Output the results
+DUMP units_sold_stats;
+DUMP unique_items_sold;
+
+-----------------------------------------------------------------------
+QUES 3:-
+Implement a MapReduce program using pig to identify and analyse tags specified using movie lens 
+to find low,high,avg of ratings in every genre.
+ 
+-- Load the ratings and movies datasets into relations
+ratings = LOAD 'ratings.csv' USING PigStorage(',') AS (userID:int, movieID:int, rating:float, timestamp:int);
+movies = LOAD 'movies.csv' USING PigStorage(',') AS (movieID:int, title:chararray, genres:chararray);
+
+-- Flatten the movies data by genre
+movie_genres = FOREACH movies GENERATE movieID, FLATTEN(TOKENIZE(genres)) AS genre;
+
+-- Join the ratings and movie_genres data
+joined_data = JOIN ratings BY movieID, movie_genres BY movieID;
+
+-- Group the joined data by genre
+grouped_data = GROUP joined_data BY genre;
+
+-- Calculate the low, high, and average ratings for each genre
+genre_ratings = FOREACH grouped_data GENERATE 
+                    group AS genre,
+                    MIN(joined_data.rating) AS low_rating,
+                    MAX(joined_data.rating) AS high_rating,
+                    AVG(joined_data.rating) AS avg_rating;
+
+-- Output the results
+DUMP genre_ratings;
+
+---------------------------------------------------------------------------------
+Ques 4:-
+create a MapReduce prgram using Pig to analyse titanic dataset to:
+1.display gender-wise count of passengers travelling in titanic.
+2.display survival rate of passengers.
+
+
+-- Load the Titanic dataset into a relation
+titanic = LOAD 'titanic_dataset.csv' USING PigStorage(',') AS (passenger_id:int, survived:int, pclass:int, name:chararray, sex:chararray, age:float, sibsp:int, parch:int, ticket:chararray, fare:float, cabin:chararray, embarked:chararray);
+
+-- Group the data by gender
+grouped_by_gender = GROUP titanic BY sex;
+
+-- Count the number of passengers by gender
+passengers_by_gender = FOREACH grouped_by_gender GENERATE 
+                          group AS gender,
+                          COUNT(titanic) AS passenger_count;
+
+-- Calculate the survival rate of passengers
+total_passengers = COUNT(titanic);
+total_survived = SUM(titanic.survived);
+survival_rate = (float)total_survived / (float)total_passengers;
+
+-- Output the results
+DUMP passengers_by_gender;
+DUMP survival_rate;
+
+

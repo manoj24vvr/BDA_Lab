@@ -1,0 +1,4 @@
+Alice: Bob, Charlie, David
+Bob: Alice, Charlie, David
+Charlie: Alice, Bob
+David: Alice, Bob

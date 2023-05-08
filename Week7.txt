@@ -1,0 +1,84 @@
+1. Demonstrate the built in functions using Scala by creating an array, perform following functions:
+1) Non Parameterized function
+def sumArray(arr: Array[Int]): Int = {
+     | var sum = 0
+     | for (i <- arr) {
+     | sum += i
+     | }
+     | sum
+     | }
+
+
+2) Parameterized Function
+def multiplyArray(arr: Array[Int], factor: Int): Array[Int] = {
+     | for (i <- arr) yield i * factor
+     | }
+     
+3) Recursion Fucntion
+def reverseArray(arr: Array[Int]): Array[Int]={
+     | if (arr.length == 1){
+     | arr
+     | }else{
+     | reverseArray(arr.tail) :+ arr.head
+     | }
+     | }
+
+def factorial(n:Int):Int={
+     | if(n==1)
+     | {
+     | return 1
+     | }
+     | n*factorial(n-1)
+     | }
+
+4) Function Parameter with Default Value
+def multiplyArray(arr: Array[Int], fac: Int=4): Array[Int] = {
+     | for (i <- arr) yield i * fac
+     | }
+
+
+5) Anonymous Functions
+val unn = (a:Array[Int],b:Array[Int])=>a.union(b)
+union(arr1,arr2)
+
+6) Functions with map method
+val multiplied = nums.map(x => x * 7)
+
+7) Currying Functions
+def multiplyArray(arr:Array[Int])(fac: Int)={
+     | arr.map(x => x*7)
+     | }
+
+
+8) Nested Functions
+def num_sum(a:Int,b:Int): Int={
+     | a+b
+     | }
+
+def addArrayFac(arr1: Array[Int], fac: Int): Array[Int] = {
+     | for( i <- arr1)
+     | yield num_sum(i, fac)
+     | }
+
+
+2.
+1) Use spark Scala to demostrate the add & multiplication of two numbers using Currying function
+def sum(a:Int)(b:Int)={
+     | a+b
+     | }
+
+def multiply(a:Int)(b:Int)={
+     | a*b
+     | }
+
+2) Create Scala program of Partial function using Case statement by creating array.
+3) Create Scala program to demonstrate the function overloading by changing the number of parameters
+def sum(a:Int, b:Int):Int={
+     | return a+b
+     | }
+     
+def sum(a:Int,b:Int,c:Int):Int={
+     | return a+b+c
+     | }
+
+4) Scala program of Multiple Nested Function

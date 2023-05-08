@@ -1,0 +1,9 @@
+to fetch sum of employee salaries dept wise
+to find tuple based on class sensitivity by creating an object, copying it and testing it for equality 
+
+
+hdoop fs -moveFromLocal /home/hdoop/employees.csv /batch_4/20968154/
+val df = spark.read.option("header", "true").csv(/batch_4/200968154/employees.csv)
+val dept = df.groupBy("DEPARTMENT_ID").agg(sum("SALARY"));
+
+val gender = df.groupBy("DEPARTMENT_ID","GENDER").agg(count("GENDER"));

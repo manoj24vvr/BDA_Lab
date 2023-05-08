@@ -1,0 +1,119 @@
+// WORD COUNT USING SCALA
+
+hdoop@dscalab04-31:~$ spark-shell
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+23/03/14 14:39:22 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Spark context Web UI available at http://dscalab04-31:4040
+Spark context available as 'sc' (master = local[*], app id = local-1678784962744).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.3.1
+      /_/
+         
+Using Scala version 2.12.15 (OpenJDK 64-Bit Server VM, Java 1.8.0_352)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val text=sc.textFile("200968108/inputWC.txt")
+text: org.apache.spark.rdd.RDD[String] = 200968108/inputWC.txt MapPartitionsRDD[1] at textFile at <console>:23
+
+scala> val mapf=text.flatMap(line=>line.split(" "))
+mapf: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[2] at flatMap at <console>:23
+
+scala> mapf.collect;
+res0: Array[String] = Array(hi, hello, hello, manoj, vvr, naruto, dragon, vvr, manoj, how, r, u, when, how, manoj, naruto, naruto, vvr, naruto, hi, hi, dragon, manoj)
+
+scala> val mapperf=mapf.map(word=>(word,1))
+mapperf: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[3] at map at <console>:23
+
+scala> mapperf.collect;
+res1: Array[(String, Int)] = Array((hi,1), (hello,1), (hello,1), (manoj,1), (vvr,1), (naruto,1), (dragon,1), (vvr,1), (manoj,1), (how,1), (r,1), (u,1), (when,1), (how,1), (manoj,1), (naruto,1), (naruto,1), (vvr,1), (naruto,1), (hi,1), (hi,1), (dragon,1), (manoj,1))
+
+scala> val reducerf=mapperf.reduceByKey(_+_)
+reducerf: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[4] at reduceByKey at <console>:23
+
+scala> reducerf.collect;
+res2: Array[(String, Int)] = Array((vvr,3), (when,1), (how,2), (hello,2), (r,1), (naruto,4), (hi,3), (u,1), (dragon,2), (manoj,4))
+
+hdoop@dscalab04-31:~$ 
+
+
+--------------------------------------------------------------------------------------------
+
+spark-shell
+
+val text=sc.textFile("200968108/inputWC.txt")
+
+val mapf=text.flatMap(line=>line.split(" "))
+
+mapf.collect;
+
+val mapperf=mapf.map(word=>(word,1))
+
+mapperf.collect;
+
+val reducerf=mapperf.reduceByKey(_+_)
+
+reducerf.collect;
+
+--------------------------------------------------------------------------------------------
+
+>>> words = sc.textFile('/text.txt').flatMap(lambda line: line.split(" "))
+>>> a = words.map(lambda word: (word,1))
+>>> b = a.reduceByKey(lambda a,b:a+b)
+>>> b.collect()
+[('are', 2), ('analytics', 2), ('hello', 3), ('hi', 3), ('how', 1), ('you', 2), ('bda', 6)]
+
+--------------------------------------------------------------------------------------------
+
+val rdd1 = sc.parallelize(List(1,2,3,4))
+rdd1.collect()
+Array[Int] = Array(1, 2, 3, 4)
+
+val filterrdd1 = rdd1.filter(x=>x!=3)
+filterrdd1.collect()
+Array[Int] = Array(1, 2, 4)
+
+val rdd2 = sc.parallelize(List(1,2,5))
+val maprdd2 = rdd2.map(x=>x.to(3))
+maprdd2.collect()
+Array[scala.collection.immutable.Range.Inclusive] = Array(Range 1 to 3, Range 2 to 3, empty Range 5 to 3)
+
+val flatmaprdd2 = rdd2.flatMap(x=>x.to(3))
+flatmaprdd2.collect()
+Array[Int] = Array(1, 2, 3, 2, 3)
+
+val rdd3 = sc.parallelize(List(1,1,2,3,2,4))
+val distinctrdd3 = rdd3.distinct
+distinctrdd3.collect()
+Array[Int] = Array(1, 2, 3, 4)
+
+val rdd4 = sc.parallelize(List(1,2,3,4))
+
+val rdd5 = sc.parallelize(List(4,5))
+
+val unionrdd = rdd4.union(rdd5)
+unionrdd.collect()
+Array[Int] = Array(1, 2, 3, 4, 4, 5)
+
+val intersectionrdd = rdd4.intersection(rdd5)
+intersectionrdd.collect()
+Array[Int] = Array(4)
+
+val substractrdd = rdd4.subtract(rdd5)
+substractrdd.collect()
+Array[Int] = Array(1, 2, 3)
+
+rdd4.reduce((x,y)=>x+y)
+Int = 10
+
+rdd4.take(2)
+Array[Int] = Array(1, 2)
+
+srdd4.top(3)
+Array[Int] = Array(4, 3, 2)
+
